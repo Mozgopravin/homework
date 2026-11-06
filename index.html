@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ИУБиП — Первый Информационный</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #0b0d10;
+      color: #e2e8f0;
+      overflow-x: hidden;
+    }
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    /* Background subtle tech grid */
+    .bg-grid {
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: radial-gradient(ellipse 65% 55% at 50% 50%, black 25%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 50%, black 25%, transparent 100%);
+    }
+
+    /* Word styles inside reveal container */
+    .word-token {
+      display: inline-block;
+      margin-right: 0.28em;
+      position: relative;
+      vertical-align: baseline;
+      will-change: opacity;
+    }
+
+    /* Animated Sweeping Block Cover */
+    .reveal-block {
+      position: absolute;
+      pointer-events: none;
+      z-index: 5;
+      background: #4f46e5;
+      border-radius: 4px;
+      transform-origin: 50% 50%;
+      will-change: opacity, transform;
+    }
+
+    /* Permanent highlight badge background */
+    .highlight-pill {
+      position: absolute;
+      left: -0.22em;
+      right: -0.22em;
+      top: -0.1em;
+      bottom: -0.1em;
+      border-radius: 6px;
+      z-index: -1;
+      pointer-events: none;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between relative selection:bg-indigo-500 selection:text-white">
+
+  <!-- Ambient Backdrop -->
+  <div class="fixed inset-0 pointer-events-none z-0 bg-grid"></div>
+  <div class="fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[300px] bg-indigo-600/15 blur-[120px] rounded-full pointer-events-none z-0"></div>
+  <div class="fixed bottom-1/4 left-1/2 -translate-x-1/2 w-[420px] h-[220px] bg-blue-600/10 blur-[100px] rounded-full pointer-events-none z-0"></div>
+
+  <!-- Header -->
+  <header class="relative z-20 w-full px-5 py-4 md:px-10 flex items-center justify-between border-b border-zinc-800/80 backdrop-blur-md bg-[#0b0d10]/80">
+    <div class="flex items-center gap-3">
+      <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-blue-500 flex items-center justify-center shadow-lg shadow-indigo-600/25 ring-1 ring-white/20">
+        <i data-lucide="graduation-cap" class="w-5 h-5 text-white"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="font-extrabold tracking-wider text-sm text-white">ИУБиП</span>
+          <span class="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+            Первый
+          </span>
+        </div>
+        <p class="text-[10px] text-zinc-400 font-mono-code tracking-tight">ИНФОРМАЦИОННЫЙ ИНСТИТУТ</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <a 
+        href="http://www.dfiubip.ru/" 
+        target="_blank" 
+        class="hidden sm:inline-flex text-xs text-zinc-400 hover:text-zinc-200 transition-colors mr-2"
+      >
+        dfiubip.ru ↗
+      </a>
+      <button 
+        id="btn-replay" 
+        class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-zinc-800/80 hover:bg-zinc-700 active:scale-95 text-zinc-200 border border-zinc-700/60 transition-all shadow-sm"
+        title="Перезапустить анимацию"
+      >
+        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-indigo-400"></i>
+        <span>Перезапуск</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Centered Content -->
+  <main class="relative z-10 flex-1 flex flex-col items-center justify-center px-5 sm:px-8 py-12 max-w-4xl mx-auto w-full text-center">
+    
+    <!-- Tagline Badge -->
+    <div class="mb-6 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900/90 border border-zinc-800 text-xs text-zinc-300 shadow-sm">
+      <i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-400"></i>
+      <span class="tracking-wide text-[11px] sm:text-xs">Первый информационный вуз региона</span>
+    </div>
+
+    <!-- Slogan Container with Reduced, Elegant Font Size -->
+    <div class="w-full relative px-2">
+      <div 
+        id="text-reveal-host" 
+        class="relative mx-auto text-center font-bold tracking-tight text-zinc-100"
+        style="font-size: clamp(20px, 2.5vw, 28px); line-height: 1.48em;"
+      >
+        <!-- Text tokens will be injected and measured here -->
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-3.5">
+      <a 
+        href="http://www.dfiubip.ru/" 
+        target="_blank"
+        class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-medium text-xs sm:text-sm shadow-lg shadow-indigo-600/30 hover:scale-[1.02] active:scale-[0.98] transition-all"
+      >
+        <span>Поступить в ИУБиП</span>
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </a>
+
+      <button 
+        id="btn-replay-bottom" 
+        class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white text-xs sm:text-sm font-medium transition-all"
+      >
+        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-indigo-400"></i>
+        <span>Повторить анимацию</span>
+      </button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="relative z-10 w-full px-6 py-4 border-t border-zinc-800/80 bg-[#0b0d10]/90 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 gap-2">
+    <div class="flex items-center gap-4">
+      <span class="flex items-center gap-1.5 text-zinc-400">
+        <i data-lucide="cpu" class="w-3.5 h-3.5 text-indigo-400"></i>
+        <span>Цифровые стандарты</span>
+      </span>
+      <span class="text-zinc-700">•</span>
+      <span class="flex items-center gap-1.5 text-zinc-400">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+        <span>Государственная аккредитация</span>
+      </span>
+    </div>
+    <div class="font-mono-code text-[11px] text-zinc-500">
+      © Донецкий институт Южного Университета (ИУБиП)
+    </div>
+  </footer>
+
+  <!-- Animation Engine Script -->
+  <script>
+    lucide.createIcons();
+
+    const SLOGAN_TEXT = "Быть первым — это осознанный выбор и образ мышления. ИУБиП стал первым информационным институтом региона, открывающим прямой путь к востребованным профессиям в цифровой среде. Начните свое образование с лидера, чтобы всегда оставаться на шаг впереди.";
+
+    // Highlight definitions
+    const HIGHLIGHTS = [
+      {
+        text: "Быть первым",
+        color: "#4f46e5",
+        textColor: "#ffffff"
+      },
+      {
+        text: "первым информационным",
+        color: "#2563eb",
+        textColor: "#ffffff"
+      }
+    ];
+
+    const host = document.getElementById("text-reveal-host");
+    let wordElements = [];
+    let blockElements = [];
+    let lineData = [];
+    let wordRects = [];
+    let currentRaf = 0;
+
+    // Smootherstep interpolation
+    function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+    function smootherstep(t) {
+      const x = clamp01(t);
+      return x * x * x * (x * (x * 6 - 15) + 10);
+    }
+
+    function renderDOM() {
+      host.innerHTML = "";
+      wordElements = [];
+      blockElements = [];
+
+      const words = SLOGAN_TEXT.split(/\s+/).filter(Boolean);
+
+      // Build highlight map
+      const highlightMap = new Map();
+      HIGHLIGHTS.forEach(hl => {
+        const tokens = hl.text.split(/\s+/).filter(Boolean);
+        for (let i = 0; i <= words.length - tokens.length; i++) {
+          let match = true;
+          for (let j = 0; j < tokens.length; j++) {
+            if (words[i + j].toLowerCase() !== tokens[j].toLowerCase()) {
+              match = false;
+              break;
+            }
+          }
+          if (match) {
+            for (let j = 0; j < tokens.length; j++) {
+              highlightMap.set(i + j, hl);
+            }
+          }
+        }
+      });
+
+      // Overlay container for animated sweeping blocks
+      const overlay = document.createElement("div");
+      overlay.style.position = "absolute";
+      overlay.style.inset = "0";
+      overlay.style.pointerEvents = "none";
+      overlay.style.zIndex = "4";
+      host.appendChild(overlay);
+
+      words.forEach((w, index) => {
+        const span = document.createElement("span");
+        span.className = "word-token";
+        span.textContent = w;
+        span.style.opacity = "0"; // initial hidden state
+
+        const hl = highlightMap.get(index);
+        if (hl) {
+          span.style.color = hl.textColor || "#fff";
+          const pill = document.createElement("span");
+          pill.className = "highlight-pill";
+          pill.style.background = hl.color;
+          span.appendChild(pill);
+        }
+
+        host.appendChild(span);
+        wordElements.push(span);
+
+        // Sweeping block for this word
+        const blk = document.createElement("span");
+        blk.className = "reveal-block";
+        blk.style.opacity = "0";
+        overlay.appendChild(blk);
+        blockElements.push(blk);
+      });
+    }
+
+    function measureLayout() {
+      wordRects = [];
+      const baseTop = host.offsetTop;
+      let currentLine = -1;
+      let lastY = -9999;
+
+      wordElements.forEach((el, i) => {
+        const offsetT = el.offsetTop;
+        if (Math.abs(offsetT - lastY) > 5) {
+          currentLine++;
+          lastY = offsetT;
+        }
+
+        const rect = {
+          x: el.offsetLeft,
+          y: el.offsetTop,
+          w: el.offsetWidth,
+          h: el.offsetHeight,
+          line: currentLine
+        };
+        wordRects.push(rect);
+
+        // Position sweeping block exactly over word
+        const blk = blockElements[i];
+        blk.style.left = (rect.x - 2) + "px";
+        blk.style.top = (rect.y - 2) + "px";
+        blk.style.width = (rect.w + 4) + "px";
+        blk.style.height = (rect.h + 4) + "px";
+      });
+
+      const lineCount = Math.max(1, currentLine + 1);
+      lineData = [];
+      for (let l = 0; l < lineCount; l++) {
+        let minX = Infinity, maxX = -Infinity;
+        wordRects.forEach(r => {
+          if (r.line === l) {
+            minX = Math.min(minX, r.x);
+            maxX = Math.max(maxX, r.x + r.w);
+          }
+        });
+        lineData.push({ line: l, minX, maxX });
+      }
+
+      return lineCount;
+    }
+
+    function applyAnimationProgress(progress, lineCount) {
+      const band = Math.max(1, Math.min(3, lineCount));
+      const soft = Math.max(0.4, band * 0.45);
+      const front = progress * (lineCount + band + soft);
+
+      for (let i = 0; i < wordRects.length; i++) {
+        const r = wordRects[i];
+        const lineObj = lineData[r.line];
+        let fx = 0;
+        if (lineObj) {
+          const span = Math.max(1, lineObj.maxX - lineObj.minX);
+          fx = clamp01((r.x + r.w / 2 - lineObj.minX) / span);
+        }
+        const pos = r.line + fx;
+        const lead = smootherstep((front - pos) / soft);
+        const trail = smootherstep((front - band - pos) / soft);
+
+        const blk = blockElements[i];
+        if (blk) {
+          const v = Math.max(0, lead - trail);
+          blk.style.opacity = v.toFixed(3);
+          blk.style.transform = `scaleY(${(0.94 + 0.06 * v).toFixed(3)})`;
+        }
+
+        const wEl = wordElements[i];
+        if (wEl) {
+          wEl.style.opacity = trail.toFixed(3);
+        }
+      }
+    }
+
+    function startReveal() {
+      if (currentRaf) cancelAnimationFrame(currentRaf);
+      renderDOM();
+      const lineCount = measureLayout();
+
+      const durationMs = 2100;
+      let start = null;
+
+      function step(now) {
+        if (!start) start = now;
+        const elapsed = now - start;
+        const t = clamp01(elapsed / durationMs);
+
+        applyAnimationProgress(t, lineCount);
+
+        if (t < 1) {
+          currentRaf = requestAnimationFrame(step);
+        } else {
+          currentRaf = 0;
+        }
+      }
+
+      currentRaf = requestAnimationFrame(step);
+    }
+
+    // Handlers
+    document.getElementById("btn-replay").addEventListener("click", startReveal);
+    document.getElementById("btn-replay-bottom").addEventListener("click", startReveal);
+
+    let resizeTimer;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(startReveal, 150);
+    });
+
+    window.addEventListener("load", () => {
+      setTimeout(startReveal, 80);
+    });
+  </script>
+</body>
+</html>
